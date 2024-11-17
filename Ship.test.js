@@ -1,4 +1,4 @@
-import { Ship } from './Ship'
+import Ship from './Ship'
 
 test('create length 3 ship, and hit it 3 time', () => {
   const testShip = Ship(3)
