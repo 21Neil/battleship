@@ -7,6 +7,7 @@ const Square = () => {
   };
   const placeShip = (enterShip) => ship = enterShip;
   return {
+    receivedAtk,
     receiveAtk,
     placeShip
   }
