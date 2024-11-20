@@ -6,10 +6,11 @@ const Square = () => {
     ship?.hit();
   };
   const placeShip = (enterShip) => ship = enterShip;
+  const isReceivedAtk = () => receivedAtk
   return {
-    receivedAtk,
     receiveAtk,
-    placeShip
+    placeShip,
+    isReceivedAtk
   }
 };
 
