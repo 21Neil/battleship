@@ -2,6 +2,7 @@ const Square = () => {
   let receivedAtk = false;
   let ship = null;
   const receiveAtk = () => {
+    if (receivedAtk) return;
     receivedAtk = true;
     ship?.hit();
   };
