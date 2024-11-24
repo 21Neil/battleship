@@ -1,4 +1,4 @@
-import Square from "./Square";
+import Square from "../js/Square";
 
 describe('test square', () => {
   const testSquare = Square()
