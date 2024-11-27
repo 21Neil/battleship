@@ -8,10 +8,12 @@ const Square = () => {
   };
   const placeShip = (enterShip) => ship = enterShip;
   const isReceivedAtk = () => receivedAtk
+  const getShip = () => ship
   return {
     receiveAtk,
     placeShip,
-    isReceivedAtk
+    isReceivedAtk,
+    getShip
   }
 };
 
