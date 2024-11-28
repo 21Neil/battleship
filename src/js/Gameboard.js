@@ -2,12 +2,16 @@ import Ship from './Ship';
 import Square from './Square';
 
 const Gameboard = () => {
-  const board = new Array(100).fill(Square());
+  const board = [];
   const carrier = Ship(5);
   const battleship = Ship(4);
   const destroyer = Ship(3);
   const submarine = Ship(3);
   const patrolBoat = Ship(2);
+  
+  for(let i = 0; i < 100; i++) {
+    board.push(Square());
+  }
 
   const xyToNum = (x, y) => {
     return x + y * 10;
