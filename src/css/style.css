@@ -1,0 +1,42 @@
+@font-face {
+  font-family: Roboto;
+  src: url(../asset/font/Roboto-Medium.ttf);
+}
+
+@font-face {
+  font-family: Roboto;
+  src: url(../asset/font/Roboto-Bold.ttf);
+  font-weight: bold;
+}
+
+body {
+  font-family: Roboto, Arial, Helvetica, sans-serif;
+  font-size: 12px;
+}
+
+header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  h1 {
+    font-size: 3em;
+    font-weight: normal;
+  }
+}
+
+main {
+  .btn-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  button {
+    font-size: 3em;
+    background: none;
+    border: none;
+    color: green;
+    padding: .3em .5em;
+    cursor: pointer;
+    font-weight: bold;
+  }
+}
