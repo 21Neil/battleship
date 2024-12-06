@@ -39,4 +39,45 @@ main {
     cursor: pointer;
     font-weight: bold;
   }
+  .board-container {
+    display: flex;
+    justify-content: space-evenly;
+    padding: 50px 0;
+    .board {
+      display: grid;
+      grid-template-columns: repeat(10, 35px);
+      grid-template-rows: repeat(10, 35px);
+      border: 1px solid #535353;
+      border-radius: 5px;
+    }
+    .square {
+      border: 1px solid #7E7E7E;
+      background-color: #5E83FF;
+      margin-right: -1px;
+      margin-bottom: -1px;
+    }
+    .ship {
+      background-color: #7c7c7c;
+    }
+    .received-atk::before {
+      display: flex;
+      content: '❌';
+      font-size: 25px;
+      width: 36px;
+      height: 36px;
+      justify-content: center;
+      align-items: center;
+    }
+    .enemy-board {
+      .square:hover {
+        background-color: #8AA5FF;
+      }
+    }
+    :nth-child(10n) {
+      margin-right: 0;
+    }
+    :nth-child(n + 90) {
+      margin-bottom: 0;
+    }
+  }
 }

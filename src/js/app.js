@@ -1,5 +1,7 @@
+import Game from "./Game" 
+
 const app = () => {
-  console.log('hello world')
+  Game()
 }
 
 export default app

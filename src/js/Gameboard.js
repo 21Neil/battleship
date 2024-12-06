@@ -14,7 +14,7 @@ const Gameboard = () => {
   }
 
   const xyToNum = (x, y) => {
-    return x + y * 10;
+    return +x + +y * 10;
   };
 
   const isValidPlace = (x, y, direction, length) => {
@@ -90,8 +90,13 @@ const Gameboard = () => {
     const index = xyToNum(x, y);
     if (board[index].isReceivedAtk()) return;
     board[index].receiveAtk();
-    if(checkAllShipSunk()) return 'All ship sank!'
   };
+
+  const hasShip = (x, y) => {
+    const index = xyToNum(x, y);
+    if (board[index].getShip()) return true;
+    return false
+  }
 
   const checkAllShipSunk = () => {
     return (
@@ -112,7 +117,9 @@ const Gameboard = () => {
     placeSubmarine,
     placePatrolShip,
     receiveAttack,
-    getBoard
+    getBoard,
+    checkAllShipSunk,
+    hasShip
   };
 };
 
