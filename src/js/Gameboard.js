@@ -86,9 +86,14 @@ const Gameboard = () => {
     placeShip(patrolBoat, x, y, direction);
   };
 
+  const isReceivedAtk = (x, y) => {
+    const index = xyToNum(x, y);
+    return board[index].isReceivedAtk()
+  }
+
   const receiveAttack = (x, y) => {
     const index = xyToNum(x, y);
-    if (board[index].isReceivedAtk()) return;
+    if (isReceivedAtk(x, y)) return;
     board[index].receiveAtk();
   };
 
@@ -119,7 +124,8 @@ const Gameboard = () => {
     receiveAttack,
     getBoard,
     checkAllShipSunk,
-    hasShip
+    hasShip,
+    isReceivedAtk
   };
 };
 

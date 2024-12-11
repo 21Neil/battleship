@@ -30,15 +30,6 @@ main {
     align-items: center;
     justify-content: center;
   }
-  button {
-    font-size: 3em;
-    background: none;
-    border: none;
-    color: green;
-    padding: .3em .5em;
-    cursor: pointer;
-    font-weight: bold;
-  }
   .board-container {
     display: flex;
     justify-content: space-evenly;
@@ -80,4 +71,38 @@ main {
       margin-bottom: 0;
     }
   }
+}
+
+button {
+  font-size: 3em;
+  background: none;
+  border: none;
+  color: green;
+  padding: .3em .5em;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.win-screen {
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  top: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.2);
+  p {
+    font-size: 3em;
+    margin: 0.5em;
+  }
+  p:nth-child(2) {
+    margin-bottom: 1em;
+  }
+}
+
+.hide {
+  visibility: hidden;
 }
