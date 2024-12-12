@@ -21,6 +21,7 @@ header {
   h1 {
     font-size: 3em;
     font-weight: normal;
+    margin: 0.5em;
   }
 }
 
@@ -33,21 +34,22 @@ main {
   .board-container {
     display: flex;
     justify-content: space-evenly;
-    padding: 50px 0;
+    padding: 2em 0;
     .board {
       display: grid;
       grid-template-columns: repeat(10, 35px);
       grid-template-rows: repeat(10, 35px);
       border: 1px solid #535353;
       border-radius: 5px;
+      margin-bottom: 1em;
     }
     .square {
-      border: 1px solid #7E7E7E;
-      background-color: #5E83FF;
+      border: 1px solid #7e7e7e;
+      background-color: #5e83ff;
       margin-right: -1px;
       margin-bottom: -1px;
     }
-    .ship {
+    .ship-square {
       background-color: #7c7c7c;
     }
     .received-atk::before {
@@ -61,7 +63,7 @@ main {
     }
     .enemy-board {
       .square:hover {
-        background-color: #8AA5FF;
+        background-color: #8aa5ff;
       }
     }
     :nth-child(10n) {
@@ -71,6 +73,51 @@ main {
       margin-bottom: 0;
     }
   }
+
+  .player-board-container {
+    position: relative;
+    width: 352px;
+    .ship-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5em;
+      .ship {
+        height: 35px;
+        background-color: #7c7c7c;
+        margin-bottom: 0.5em;
+      }
+      .carrier {
+        width: 175px;
+      }
+      .battleship {
+        width: 140px;
+      }
+      .destroyer {
+        width: 105px;
+      }
+      .submarine {
+        width: 105px;
+      }
+      .patrol-ship {
+        width: 70px;
+      }
+    }
+    .invisible-board {
+      width: 352px;
+      height: 352px;
+      position: absolute;
+      display: grid;
+      grid-template-columns: repeat(10, 35px);
+      grid-template-rows: repeat(10, 35px);
+      border-radius: 5px;
+      .invisible-square {
+        margin-right: -1px;
+        margin-bottom: -1px;
+      }
+      z-index: 99;
+    }
+    z-index: 0;
+  }
 }
 
 button {
@@ -78,7 +125,7 @@ button {
   background: none;
   border: none;
   color: green;
-  padding: .3em .5em;
+  padding: 0.3em 0.5em;
   cursor: pointer;
   font-weight: bold;
 }
@@ -105,4 +152,9 @@ button {
 
 .hide {
   visibility: hidden;
+}
+
+.drag {
+  cursor: pointer;
+  z-index: 1;
 }
