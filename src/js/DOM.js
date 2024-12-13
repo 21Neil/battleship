@@ -12,31 +12,45 @@ const showPlaceableShip = () => {
   const submarineElement = document.createElement('div');
   const patrolShipElement = document.createElement('div');
   const invisibleBoard = document.createElement('div');
+  const rotateBtn = document.createElement('button');
 
-  carrierElement.classList.add('carrier', 'ship', 'drag');
-  battleshipElement.classList.add('battleship', 'ship', 'drag');
-  destroyerElement.classList.add('destroyer', 'ship', 'drag');
-  submarineElement.classList.add('submarine', 'ship', 'drag');
-  patrolShipElement.classList.add('patrol-ship', 'ship', 'drag');
+  rotateBtn.textContent = '⟳';
+
+  carrierElement.classList.add('carrier', 'ship', 'drag', 'ship-v');
+  battleshipElement.classList.add('battleship', 'ship', 'drag', 'ship-v');
+  destroyerElement.classList.add('destroyer', 'ship', 'drag', 'ship-v');
+  submarineElement.classList.add('submarine', 'ship', 'drag', 'ship-v');
+  patrolShipElement.classList.add('patrol-ship', 'ship', 'drag', 'ship-v');
   invisibleBoard.classList.add('invisible-board');
+  rotateBtn.classList.add('rotate-btn');
 
   carrierElement.dataset.length = 5;
   carrierElement.dataset.direction = 'v';
-  carrierElement.dataset.length = 4;
-  carrierElement.dataset.direction = 'v';
-  carrierElement.dataset.length = 3;
-  carrierElement.dataset.direction = 'v';
-  carrierElement.dataset.length = 3;
-  carrierElement.dataset.direction = 'v';
-  carrierElement.dataset.length = 2;
-  carrierElement.dataset.direction = 'v';
+  carrierElement.dataset.onBoard = false;
+  carrierElement.dataset.type = 'carrier';
+  battleshipElement.dataset.length = 4;
+  battleshipElement.dataset.direction = 'v';
+  battleshipElement.dataset.onBoard = false;
+  battleshipElement.dataset.type = 'battleship';
+  destroyerElement.dataset.length = 3;
+  destroyerElement.dataset.direction = 'v';
+  destroyerElement.dataset.onBoard = false;
+  destroyerElement.dataset.type = 'destroyer';
+  submarineElement.dataset.length = 3;
+  submarineElement.dataset.direction = 'v';
+  submarineElement.dataset.onBoard = false;
+  submarineElement.dataset.type = 'submarine';
+  patrolShipElement.dataset.length = 2;
+  patrolShipElement.dataset.direction = 'v';
+  patrolShipElement.dataset.type = 'patrol-ship';
 
   shipContainer.append(
     carrierElement,
     battleshipElement,
     destroyerElement,
     submarineElement,
-    patrolShipElement
+    patrolShipElement,
+    rotateBtn
   );
   playerBoard.appendChild(invisibleBoard);
 
@@ -52,7 +66,7 @@ const showPlaceableShip = () => {
     const allInvisibleSquare = document.querySelectorAll(
       '.invisible-board > .invisible-square'
     );
-    
+
     const placeOnBoard = e => {
       const x = e.target.dataset.x;
       const y = e.target.dataset.y;
@@ -60,6 +74,8 @@ const showPlaceableShip = () => {
       const xEnd = direction === 'v' ? +x + +shipElement.dataset.length - 1 : x;
       const yEnd = direction === 'h' ? +y + +shipElement.dataset.length - 1 : y;
       const valid = xEnd < 10 && yEnd < 10;
+
+      console.log(x, y, xEnd, yEnd, direction, valid)
 
       document.removeEventListener('mousemove', onDrag);
       document.removeEventListener('mouseup', onLetGo);
@@ -74,6 +90,7 @@ const showPlaceableShip = () => {
       shipElement.style.zIndex = 100;
       shipElement.style.top = `${e.clientY - e.offsetY}px`;
       shipElement.style.left = `${e.clientX - e.offsetX}px`;
+      shipElement.dataset.onBoard = true;
       allInvisibleSquare.forEach(square => {
         square.removeEventListener('mouseup', placeOnBoard);
       });
@@ -86,12 +103,12 @@ const showPlaceableShip = () => {
     }
 
     function onLetGo() {
-      console.log(shipElement);
       document.removeEventListener('mousemove', onDrag);
       document.removeEventListener('mouseup', onLetGo);
       shipElement.style.position = '';
       shipElement.style.top = '';
       shipElement.style.left = '';
+      shipElement.dataset.onBoard = false;
     }
 
     function onGrab() {
@@ -108,11 +125,36 @@ const showPlaceableShip = () => {
     shipElement.addEventListener('mousedown', onGrab);
   };
 
+  const rotateShip = shipElement => {
+    if (shipElement.dataset.onBoard === 'true') return;
+    const direction = shipElement.dataset.direction;
+    const type = shipElement.dataset.type
+    if (direction === 'v') {
+      shipElement.dataset.direction = 'h';
+      shipElement.classList.remove(type, 'ship-v');
+      shipElement.classList.add(`${type}-h`, 'ship-h');
+    }
+    if (direction === 'h') {
+      shipElement.dataset.direction = 'v';
+      shipElement.classList.remove(`${type}-h`, 'ship-h');
+      shipElement.classList.add(type, 'ship-v');
+    }
+  };
+
+  const rotateBtnOnClick = () => {
+    rotateShip(carrierElement);
+    rotateShip(battleshipElement);
+    rotateShip(destroyerElement);
+    rotateShip(submarineElement);
+    rotateShip(patrolShipElement);
+  };
+
   addDragToShip(carrierElement);
   addDragToShip(battleshipElement);
   addDragToShip(destroyerElement);
   addDragToShip(submarineElement);
   addDragToShip(patrolShipElement);
+  rotateBtn.addEventListener('click', rotateBtnOnClick);
 };
 
 const renderPlayerBoard = board => {

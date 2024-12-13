@@ -82,9 +82,14 @@ main {
       flex-wrap: wrap;
       gap: 0.5em;
       .ship {
-        height: 35px;
         background-color: #7c7c7c;
         margin-bottom: 0.5em;
+      }
+      .ship-v {
+        height: 35px;
+      }
+      .ship-h {
+        width: 35px;
       }
       .carrier {
         width: 175px;
@@ -100,6 +105,24 @@ main {
       }
       .patrol-ship {
         width: 70px;
+      }
+      .rotate-btn {
+        font-size: 2em;
+      }
+      .carrier-h {
+        height: 175px;
+      }
+      .battleship-h {
+        height: 140px;
+      }
+      .destroyer-h {
+        height: 105px;
+      }
+      .submarine-h {
+        height: 105px;
+      }
+      .patrol-ship-h {
+        height: 70px;
       }
     }
     .invisible-board {
