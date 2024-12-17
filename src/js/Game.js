@@ -2,10 +2,9 @@ import Player from './Player';
 import {
   renderPlayerBoard,
   renderEnemyBoard,
-  showShip,
   enemyBoardEventListenerController,
-  renderComputerAttack,
   showWinner,
+  addEventListenerToStartBtn,
 } from './DOM';
 import Computer from './Computer';
 
@@ -74,13 +73,6 @@ const Game = () => {
 
   renderPlayerBoard(player1Board.getBoard());
   renderEnemyBoard(player2Board.getBoard(), attack, hasShip);
-  eventListenerController.add();
-
-  player1Board.placeCarrier(0, 0, 'h');
-  player1Board.placeBattleship(2, 3, 'v');
-  player1Board.placeDestroyer(8, 5, 'h');
-  player1Board.placeSubmarine(6, 0, 'v');
-  player1Board.placePatrolShip(2, 4, 'v');
 
   player2Board.placeCarrier(0, 0, 'h');
   player2Board.placeBattleship(2, 3, 'v');
@@ -88,7 +80,7 @@ const Game = () => {
   player2Board.placeSubmarine(6, 0, 'v');
   player2Board.placePatrolShip(2, 4, 'v');
 
-  showShip(player1Board.hasShip);
+  addEventListenerToStartBtn(eventListenerController, player1Board)
 };
 
 export default Game;

@@ -12,6 +12,7 @@
 body {
   font-family: Roboto, Arial, Helvetica, sans-serif;
   font-size: 12px;
+  width: 100vw;
 }
 
 header {
@@ -62,7 +63,7 @@ main {
       align-items: center;
     }
     .enemy-board {
-      .square:hover {
+      .square-hover:hover {
         background-color: #8aa5ff;
       }
     }
@@ -75,8 +76,10 @@ main {
   }
 
   .player-board-container {
-    position: relative;
     width: 352px;
+    .player-board {
+      position: relative;
+    }
     .ship-container {
       display: flex;
       flex-wrap: wrap;

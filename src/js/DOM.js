@@ -62,10 +62,25 @@ const showPlaceableShip = () => {
     invisibleBoard.appendChild(squareElement);
   }
 
-  const addDragToShip = shipElement => {
+  const dragShipEvent = shipElement => {
     const allInvisibleSquare = document.querySelectorAll(
       '.invisible-board > .invisible-square'
     );
+
+    const removeInvisibleSquareEventListener = () => {
+      allInvisibleSquare.forEach(square => {
+        square.removeEventListener('mouseup', placeOnBoard);
+      });
+    };
+
+    const initShipElement = () => {
+      shipElement.style.position = '';
+      shipElement.style.top = '';
+      shipElement.style.left = '';
+      shipElement.dataset.onBoard = false;
+      shipElement.dataset.x = '';
+      shipElement.dataset.y = '';
+    };
 
     const placeOnBoard = e => {
       const x = e.target.dataset.x;
@@ -75,60 +90,88 @@ const showPlaceableShip = () => {
       const yEnd = direction === 'h' ? +y + +shipElement.dataset.length - 1 : y;
       const valid = xEnd < 10 && yEnd < 10;
 
-      console.log(x, y, xEnd, yEnd, direction, valid)
+      const checkHadShip = () => {
+        const allShip = document.querySelectorAll('.ship.drag');
+        const right = element => element.getBoundingClientRect().right;
+        const left = element => element.getBoundingClientRect().left;
+        const top = element => element.getBoundingClientRect().top;
+        const bottom = element => element.getBoundingClientRect().bottom;
 
+        for (let i = 0; i < allShip.length; i++) {
+          for (let j = 0; j < allShip.length; j++) {
+            const isOverLapping =
+              left(allShip[i]) < right(allShip[j]) &&
+              right(allShip[i]) > left(allShip[j]) &&
+              top(allShip[i]) < bottom(allShip[j]) &&
+              bottom(allShip[i]) > top(allShip[j]);
+            if (isOverLapping && i !== j) return true;
+          }
+        }
+
+        const carrier = document.querySelector('.carrier')
+        const battleship = document.querySelector('.battleship')
+      };
+      
       document.removeEventListener('mousemove', onDrag);
       document.removeEventListener('mouseup', onLetGo);
-
-      if (!valid) {
-        shipElement.style.position = '';
-        shipElement.style.top = '';
-        shipElement.style.left = '';
-        return;
-      }
-
+      
       shipElement.style.zIndex = 100;
       shipElement.style.top = `${e.clientY - e.offsetY}px`;
       shipElement.style.left = `${e.clientX - e.offsetX}px`;
+
+      if (!valid || checkHadShip()) {
+        initShipElement();
+        removeInvisibleSquareEventListener();
+        addEventListenerToAllShip();
+        return;
+      }
+      
       shipElement.dataset.onBoard = true;
-      allInvisibleSquare.forEach(square => {
-        square.removeEventListener('mouseup', placeOnBoard);
-      });
+      shipElement.dataset.x = e.target.dataset.x;
+      shipElement.dataset.y = e.target.dataset.y;
+      removeInvisibleSquareEventListener();
+      addEventListenerToAllShip();
     };
 
-    function onDrag(e) {
-      shipElement.style.position = 'fixed';
+    const onDrag = e => {
+      shipElement.style.position = 'absolute';
       shipElement.style.top = `${e.clientY - 17.5}px`;
       shipElement.style.left = `${e.clientX - 17.5}px`;
-    }
+    };
 
-    function onLetGo() {
+    const onLetGo = () => {
       document.removeEventListener('mousemove', onDrag);
       document.removeEventListener('mouseup', onLetGo);
-      shipElement.style.position = '';
-      shipElement.style.top = '';
-      shipElement.style.left = '';
-      shipElement.dataset.onBoard = false;
-    }
+      initShipElement();
+      removeInvisibleSquareEventListener();
+      addEventListenerToAllShip();
+    };
 
-    function onGrab() {
-      document.addEventListener('mousemove', onDrag);
+    const onGrab = () => {
       document.addEventListener('mouseup', onLetGo);
+      document.addEventListener('mousemove', onDrag);
+      removeEventListenerFromAllShip();
 
       allInvisibleSquare.forEach(square => {
         square.addEventListener('mouseup', placeOnBoard);
       });
 
       shipElement.style.zIndex = 1;
-    }
+    };
 
-    shipElement.addEventListener('mousedown', onGrab);
+    const add = () => shipElement.addEventListener('mousedown', onGrab);
+    const remove = () => shipElement.removeEventListener('mousedown', onGrab);
+
+    return {
+      add,
+      remove,
+    };
   };
 
   const rotateShip = shipElement => {
     if (shipElement.dataset.onBoard === 'true') return;
     const direction = shipElement.dataset.direction;
-    const type = shipElement.dataset.type
+    const type = shipElement.dataset.type;
     if (direction === 'v') {
       shipElement.dataset.direction = 'h';
       shipElement.classList.remove(type, 'ship-v');
@@ -149,11 +192,29 @@ const showPlaceableShip = () => {
     rotateShip(patrolShipElement);
   };
 
-  addDragToShip(carrierElement);
-  addDragToShip(battleshipElement);
-  addDragToShip(destroyerElement);
-  addDragToShip(submarineElement);
-  addDragToShip(patrolShipElement);
+  const carrierEvent = dragShipEvent(carrierElement);
+  const battleshipEvent = dragShipEvent(battleshipElement);
+  const destroyerEvent = dragShipEvent(destroyerElement);
+  const submarineEvent = dragShipEvent(submarineElement);
+  const patrolShipEvent = dragShipEvent(patrolShipElement);
+
+  const addEventListenerToAllShip = () => {
+    carrierEvent.add();
+    battleshipEvent.add();
+    destroyerEvent.add();
+    submarineEvent.add();
+    patrolShipEvent.add();
+  };
+
+  const removeEventListenerFromAllShip = () => {
+    carrierEvent.remove();
+    battleshipEvent.remove();
+    destroyerEvent.remove();
+    submarineEvent.remove();
+    patrolShipEvent.remove();
+  };
+
+  addEventListenerToAllShip();
   rotateBtn.addEventListener('click', rotateBtnOnClick);
 };
 
@@ -206,6 +267,7 @@ const enemyBoardEventListenerController = (attack, hasShip) => {
     attack(e.target.dataset.x, e.target.dataset.y);
     if (hasShip(e.target.dataset.x, e.target.dataset.y))
       e.target.classList.add('ship-square');
+    e.target.classList.remove('square-hover');
   };
 
   const add = () => {
@@ -257,13 +319,59 @@ const showWinner = player => {
   restartBtn.addEventListener('click', restartBtnOnClick, { once: true });
 };
 
-const addEventListenerToStartBtn = () => {
+const addEventListenerToStartBtn = (eventListenerController, board) => {
   const startBtn = document.querySelector('.start-btn');
+  const enemyBoardSquare = document.querySelectorAll('.enemy-board > .square');
+  const invisibleBoard = document.querySelector('.invisible-board');
+  const carrierElement = document.querySelector('.carrier');
+  const battleshipElement = document.querySelector('.battleship');
+  const destroyerElement = document.querySelector('.destroyer');
+  const submarineElement = document.querySelector('.submarine');
+  const patrolShipElement = document.querySelector('.patrol-ship');
+  const shipContainer = document.querySelector('.ship-container');
 
   const startBtnOnClick = () => {
-    Game();
+    if (
+      carrierElement.dataset.onBoard === 'false' ||
+      battleshipElement.dataset.onBoard === 'false' ||
+      destroyerElement.dataset.onBoard === 'false' ||
+      submarineElement.dataset.onBoard === 'false' ||
+      patrolShipElement.dataset.onBoard === 'false'
+    )
+      return;
+    eventListenerController.add();
+    enemyBoardSquare.forEach(square => square.classList.add('square-hover'));
+    board.placeCarrier(
+      +carrierElement.dataset.x,
+      +carrierElement.dataset.y,
+      carrierElement.dataset.direction
+    );
+    board.placeBattleship(
+      +battleshipElement.dataset.x,
+      +battleshipElement.dataset.y,
+      battleshipElement.dataset.direction
+    );
+    board.placeDestroyer(
+      +destroyerElement.dataset.x,
+      +destroyerElement.dataset.y,
+      destroyerElement.dataset.direction
+    );
+    board.placeSubmarine(
+      +submarineElement.dataset.x,
+      +submarineElement.dataset.y,
+      submarineElement.dataset.direction
+    );
+    board.placePatrolShip(
+      +patrolShipElement.dataset.x,
+      +patrolShipElement.dataset.y,
+      patrolShipElement.dataset.direction
+    );
+    showShip(board.hasShip);
+    shipContainer.replaceChildren();
+    invisibleBoard.remove();
+    startBtn.removeEventListener('click', startBtnOnClick);
   };
-  startBtn.addEventListener('click', startBtnOnClick, { once: true });
+  startBtn.addEventListener('click', startBtnOnClick);
 };
 
 export {

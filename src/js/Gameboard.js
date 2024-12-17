@@ -19,9 +19,8 @@ const Gameboard = () => {
 
   const isValidPlace = (x, y, direction, length) => {
     let shipEnd = 0;
-    if (direction === 'v') shipEnd = x + length;
-    if (direction === 'h') shipEnd = y + length;
-    
+    if (direction === 'v') shipEnd = x + length - 1;
+    if (direction === 'h') shipEnd = y + length - 1;
     const checkValid = num => {
       return num > -1 && num < 10;
     };
@@ -35,13 +34,13 @@ const Gameboard = () => {
       if(direction === 'v') {
         const end = start + length - 1
         for (let i = start; i <= end; i++) {
-          if(board[i].getShip() !== null) return new Error(`board[${i}] already has ${board[i].getShip()}!`)
+          if(board[i].getShip() !== null) throw new Error(`board[${i}] already has ${board[i].getShip()}!`)
         }
       }
       if(direction === 'h') {
         const end = start + (length - 1) * 10
         for (let i = start; i <= end; i += 10) {
-          if(board[i].getShip() !== null) return new Error(`board[${i}] already has ${board[i].getShip()}!`)
+          if(board[i].getShip() !== null) throw new Error(`board[${i}] already has ${board[i].getShip()}!`)
         }
       }
     }

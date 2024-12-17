@@ -1,7 +1,7 @@
-import { addEventListenerToStartBtn } from './DOM';
+import Game from "./Game";
 
 const app = () => {
-  addEventListenerToStartBtn();
+  Game()
 };
 
 export default app;
