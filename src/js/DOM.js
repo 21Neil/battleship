@@ -303,11 +303,15 @@ const showWinner = player => {
   const restartBtn = document.querySelector('.win-screen button');
 
   const restartBtnOnClick = () => {
-    const boardContainer = document.querySelector('.board-container');
+    const playerBoardContainer = document.querySelector('.player-board-container');
+    const enemyBoardContainer = document.querySelector('.enemy-board-container');
+    const shipContainer = document.querySelector('.ship-container');
 
     winScreen.classList.add('hide');
     restartBtn.removeEventListener('click', restartBtnOnClick);
-    boardContainer.replaceChildren();
+    playerBoardContainer.replaceChildren();
+    enemyBoardContainer.replaceChildren();
+    playerBoardContainer.appendChild(shipContainer)
     Game();
   };
 

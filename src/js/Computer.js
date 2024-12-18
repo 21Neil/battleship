@@ -30,7 +30,6 @@ const Computer = () => {
     const direction = makeRandomNumber(0, 1) === 0 ? 'v' : 'h';
 
     if (board.isValidPlace(x, y, direction, shipLength)) {
-      console.log(x, y, direction, shipLength)
       place(x, y, direction);
       return;
     };
