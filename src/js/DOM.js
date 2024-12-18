@@ -107,9 +107,6 @@ const showPlaceableShip = () => {
             if (isOverLapping && i !== j) return true;
           }
         }
-
-        const carrier = document.querySelector('.carrier')
-        const battleship = document.querySelector('.battleship')
       };
       
       document.removeEventListener('mousemove', onDrag);

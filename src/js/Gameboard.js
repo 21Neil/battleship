@@ -8,8 +8,8 @@ const Gameboard = () => {
   const destroyer = Ship(3);
   const submarine = Ship(3);
   const patrolBoat = Ship(2);
-  
-  for(let i = 0; i < 100; i++) {
+
+  for (let i = 0; i < 100; i++) {
     board.push(Square());
   }
 
@@ -25,40 +25,42 @@ const Gameboard = () => {
       return num > -1 && num < 10;
     };
 
-    if (!checkValid(x) || !checkValid(y)) throw new Error('Coordinates not valid!');
-    
-    if(!checkValid(shipEnd)) throw new Error(`Ship out of gameboard!(ship end: ${shipEnd})`);
+    if (!checkValid(x) || !checkValid(y)) return false;
+
+    if (!checkValid(shipEnd)) return false;
 
     const checkHadShip = () => {
       const start = xyToNum(x, y);
-      if(direction === 'v') {
-        const end = start + length - 1
+      if (direction === 'v') {
+        const end = start + length - 1;
         for (let i = start; i <= end; i++) {
-          if(board[i].getShip() !== null) throw new Error(`board[${i}] already has ${board[i].getShip()}!`)
+          if (board[i].getShip() !== null) return true;
         }
       }
-      if(direction === 'h') {
-        const end = start + (length - 1) * 10
+      if (direction === 'h') {
+        const end = start + (length - 1) * 10;
         for (let i = start; i <= end; i += 10) {
-          if(board[i].getShip() !== null) throw new Error(`board[${i}] already has ${board[i].getShip()}!`)
+          if (board[i].getShip() !== null) return true;
         }
       }
-    }
+    };
 
-    checkHadShip()
+    if (checkHadShip()) return false;
+
+    return true;
   };
 
   const placeShip = (ship, x, y, direction) => {
-    isValidPlace(x, y, direction, ship.getLength())
+    if (!isValidPlace(x, y, direction, ship.getLength())) return;
     const start = xyToNum(x, y);
-    if(direction === 'v') {
-      const end = start + ship.getLength() - 1
+    if (direction === 'v') {
+      const end = start + ship.getLength() - 1;
       for (let i = start; i <= end; i++) {
         board[i].placeShip(ship);
       }
     }
-    if(direction === 'h') {
-      const end = start + (ship.getLength() - 1) * 10
+    if (direction === 'h') {
+      const end = start + (ship.getLength() - 1) * 10;
       for (let i = start; i <= end; i += 10) {
         board[i].placeShip(ship);
       }
@@ -87,8 +89,8 @@ const Gameboard = () => {
 
   const isReceivedAtk = (x, y) => {
     const index = xyToNum(x, y);
-    return board[index].isReceivedAtk()
-  }
+    return board[index].isReceivedAtk();
+  };
 
   const receiveAttack = (x, y) => {
     const index = xyToNum(x, y);
@@ -99,8 +101,8 @@ const Gameboard = () => {
   const hasShip = (x, y) => {
     const index = xyToNum(x, y);
     if (board[index].getShip()) return true;
-    return false
-  }
+    return false;
+  };
 
   const checkAllShipSunk = () => {
     return (
@@ -112,7 +114,7 @@ const Gameboard = () => {
     );
   };
 
-  const getBoard = () => board
+  const getBoard = () => board;
 
   return {
     placeCarrier,
@@ -124,7 +126,8 @@ const Gameboard = () => {
     getBoard,
     checkAllShipSunk,
     hasShip,
-    isReceivedAtk
+    isReceivedAtk,
+    isValidPlace,
   };
 };
 

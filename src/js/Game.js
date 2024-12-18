@@ -74,11 +74,7 @@ const Game = () => {
   renderPlayerBoard(player1Board.getBoard());
   renderEnemyBoard(player2Board.getBoard(), attack, hasShip);
 
-  player2Board.placeCarrier(0, 0, 'h');
-  player2Board.placeBattleship(2, 3, 'v');
-  player2Board.placeDestroyer(8, 5, 'h');
-  player2Board.placeSubmarine(6, 0, 'v');
-  player2Board.placePatrolShip(2, 4, 'v');
+  computer.randomPlaceAllShip(player2Board)
 
   addEventListenerToStartBtn(eventListenerController, player1Board)
 };
