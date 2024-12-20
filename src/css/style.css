@@ -32,6 +32,15 @@ main {
     align-items: center;
     justify-content: center;
   }
+
+  .enemy-type-container {
+    font-size: 1.2em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: .5em;
+  }
+
   .board-container {
     display: flex;
     justify-content: space-evenly;
@@ -183,4 +192,22 @@ button {
 .drag {
   cursor: pointer;
   z-index: 1;
+}
+
+.turn-screen {
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  top: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: yellow;
+  p {
+    font-size: 3em;
+    margin: 0.5em;
+    margin-bottom: 1em;
+  }
 }

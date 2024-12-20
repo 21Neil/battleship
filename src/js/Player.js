@@ -1,14 +1,17 @@
-import Gameboard from "./Gameboard";
+import Gameboard from './Gameboard';
 
-const Player = (type) => {
+const Player = type => {
+  let playerType = type
   const board = Gameboard();
-  const getBoard = () => board
-  const getType = () => type
-  
+  const getBoard = () => board;
+  const getType = () => playerType;
+  const changeType = (type) => playerType = type
+
   return {
     getBoard,
-    getType
-  }
-}
+    getType,
+    changeType
+  };
+};
 
-export default Player
+export default Player;

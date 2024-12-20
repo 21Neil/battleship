@@ -10,7 +10,14 @@
       <h1>Battleship</h1>
     </header>
     <main>
-      <div class="btn-container"><button class="start-btn">Start</button></div>
+      <div class="btn-container"><button class="start-btn">Ready</button></div>
+      <div class="enemy-type-container">
+        <label for="enemy-type">Play with</label>
+        <select name="enemy-type" id="enemy-type">
+          <option value="computer">computer</option>
+          <option value="player">player</option>
+        </select>
+      </div>
       <div class="board-container">
         <div class="player-board-container">
           <div class="ship-container"></div>
@@ -23,6 +30,9 @@
       <p>Congratulations!🎉</p>
       <button>restart</button>
     </div>
-    <div class="drag"></div>
+    <div class="turn-screen hide">
+      <p></p>
+      <button></button>
+    </div>
   </body>
 </html>

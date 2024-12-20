@@ -108,10 +108,10 @@ const showPlaceableShip = () => {
           }
         }
       };
-      
+
       document.removeEventListener('mousemove', onDrag);
       document.removeEventListener('mouseup', onLetGo);
-      
+
       shipElement.style.zIndex = 100;
       shipElement.style.top = `${e.clientY - e.offsetY}px`;
       shipElement.style.left = `${e.clientX - e.offsetX}px`;
@@ -122,7 +122,7 @@ const showPlaceableShip = () => {
         addEventListenerToAllShip();
         return;
       }
-      
+
       shipElement.dataset.onBoard = true;
       shipElement.dataset.x = e.target.dataset.x;
       shipElement.dataset.y = e.target.dataset.y;
@@ -224,16 +224,15 @@ const renderPlayerBoard = board => {
   playerBoard.classList.add('player-board', 'board');
   playerBoardContainer.prepend(playerBoard);
   renderBoard(board, playerBoard);
-  showPlaceableShip();
 };
 
-const renderEnemyBoard = (board, attack, hasShip) => {
+const renderEnemyBoard = board => {
   const enemyBoardContainer = document.querySelector('.enemy-board-container');
   const enemyBoard = document.createElement('div');
 
   enemyBoard.classList.add('enemy-board', 'board');
   enemyBoardContainer.appendChild(enemyBoard);
-  renderBoard(board, enemyBoard, true, attack, hasShip);
+  renderBoard(board, enemyBoard);
 };
 
 const renderBoard = (board, container) => {
@@ -274,6 +273,7 @@ const enemyBoardEventListenerController = (attack, hasShip) => {
 
     enemyBoard.forEach(squareElement => {
       squareElement.addEventListener('click', squareOnClick);
+      squareElement.classList.add('square-hover');
     });
   };
 
@@ -281,6 +281,7 @@ const enemyBoardEventListenerController = (attack, hasShip) => {
     const enemyBoard = document.querySelectorAll('.enemy-board > div');
     enemyBoard.forEach(squareElement => {
       squareElement.removeEventListener('click', squareOnClick);
+      squareElement.classList.remove('square-hover');
     });
   };
 
@@ -301,17 +302,32 @@ const showWinner = player => {
   const winScreen = document.querySelector('.win-screen');
   const winnerElement = document.querySelector('.winner');
   const restartBtn = document.querySelector('.win-screen button');
+  const playerBoardContainer = document.querySelector(
+    '.player-board-container'
+  );
+  const enemyTypeContainer = document.querySelector('.enemy-type-container');
+  const enemyTypeLabel = document.createElement('label');
+  const enemyTypeSelect = document.createElement('select');
+  const enemyTypeComputerOpt = document.createElement('option');
+  const enemyTypePlayerOpt = document.createElement('option');
 
   const restartBtnOnClick = () => {
-    const playerBoardContainer = document.querySelector('.player-board-container');
-    const enemyBoardContainer = document.querySelector('.enemy-board-container');
     const shipContainer = document.querySelector('.ship-container');
 
+    removeAllBoard();
     winScreen.classList.add('hide');
     restartBtn.removeEventListener('click', restartBtnOnClick);
-    playerBoardContainer.replaceChildren();
-    enemyBoardContainer.replaceChildren();
-    playerBoardContainer.appendChild(shipContainer)
+    enemyTypeLabel.textContent = 'Play with';
+    enemyTypeLabel.setAttribute('for', 'enemy-type');
+    enemyTypeSelect.setAttribute('id', 'enemy-type');
+    enemyTypeSelect.setAttribute('name', 'enemy-type');
+    enemyTypeComputerOpt.setAttribute('value', 'computer');
+    enemyTypePlayerOpt.setAttribute('value', 'player');
+    enemyTypeComputerOpt.textContent = 'computer';
+    enemyTypePlayerOpt.textContent = 'player';
+    enemyTypeSelect.append(enemyTypeComputerOpt, enemyTypePlayerOpt);
+    enemyTypeContainer.append(enemyTypeLabel, enemyTypeSelect);
+    playerBoardContainer.appendChild(shipContainer);
     Game();
   };
 
@@ -320,7 +336,14 @@ const showWinner = player => {
   restartBtn.addEventListener('click', restartBtnOnClick, { once: true });
 };
 
-const addEventListenerToStartBtn = (eventListenerController, board) => {
+const addEventListenerToStartBtn = (
+  eventListenerController,
+  board,
+  player1,
+  player2,
+  start = false,
+  computerPlaceShip = () => {}
+) => {
   const startBtn = document.querySelector('.start-btn');
   const enemyBoardSquare = document.querySelectorAll('.enemy-board > .square');
   const invisibleBoard = document.querySelector('.invisible-board');
@@ -330,6 +353,7 @@ const addEventListenerToStartBtn = (eventListenerController, board) => {
   const submarineElement = document.querySelector('.submarine');
   const patrolShipElement = document.querySelector('.patrol-ship');
   const shipContainer = document.querySelector('.ship-container');
+  const enemyTypeContainer = document.querySelector('.enemy-type-container');
 
   const startBtnOnClick = () => {
     if (
@@ -340,8 +364,7 @@ const addEventListenerToStartBtn = (eventListenerController, board) => {
       patrolShipElement.dataset.onBoard === 'false'
     )
       return;
-    eventListenerController.add();
-    enemyBoardSquare.forEach(square => square.classList.add('square-hover'));
+
     board.placeCarrier(
       +carrierElement.dataset.x,
       +carrierElement.dataset.y,
@@ -367,12 +390,126 @@ const addEventListenerToStartBtn = (eventListenerController, board) => {
       +patrolShipElement.dataset.y,
       patrolShipElement.dataset.direction
     );
-    showShip(board.hasShip);
-    shipContainer.replaceChildren();
-    invisibleBoard.remove();
-    startBtn.removeEventListener('click', startBtnOnClick);
+    if (player2.getType() === 'computer') {
+      enemyTypeContainer.replaceChildren();
+      eventListenerController.add();
+      enemyBoardSquare.forEach(square => square.classList.add('square-hover'));
+      showShip(board.hasShip);
+      shipContainer.replaceChildren();
+      invisibleBoard.remove();
+      startBtn.removeEventListener('click', startBtnOnClick);
+      computerPlaceShip(player2.getBoard());
+    }
+    if (player2.getType() === 'player' && !start) {
+      showTurnScreen('player2');
+      enemyTypeContainer.replaceChildren();
+      shipContainer.replaceChildren();
+      invisibleBoard.remove();
+      showPlaceableShip();
+      startBtn.removeEventListener('click', startBtnOnClick);
+      addEventListenerToStartBtn(
+        eventListenerController,
+        player2.getBoard(),
+        player1,
+        player2,
+        true
+      );
+    }
+    if (player2.getType() === 'player' && start) {
+      showTurnScreen('player1');
+      eventListenerController.add();
+      enemyBoardSquare.forEach(square => square.classList.add('square-hover'));
+      showShip(player1.getBoard().hasShip);
+      shipContainer.replaceChildren();
+      invisibleBoard.remove();
+      startBtn.removeEventListener('click', startBtnOnClick);
+      startBtn.textContent = 'End turn';
+    }
   };
   startBtn.addEventListener('click', startBtnOnClick);
+};
+
+const addEventListenerToEnemyTypeSelect = changeType => {
+  const enemyTypeElement = document.querySelector('#enemy-type');
+
+  const enemyTypeOnChange = e => {
+    changeType(e.target.value);
+  };
+
+  enemyTypeElement.addEventListener('change', enemyTypeOnChange);
+};
+
+const addEventListenerToTurnScreenBtn = () => {
+  const turnScreen = document.querySelector('.turn-screen');
+  const turnScreenBtn = document.querySelector('.turn-screen button');
+
+  const turnScreenBtnOnClick = () => {
+    turnScreen.classList.add('hide');
+  };
+
+  turnScreenBtn.addEventListener('click', turnScreenBtnOnClick);
+};
+
+const showTurnScreen = turn => {
+  const turnScreen = document.querySelector('.turn-screen');
+  const turnScreenPara = document.querySelector('.turn-screen p');
+  const turnScreenBtn = document.querySelector('.turn-screen button');
+
+  turnScreenPara.textContent = `Passing laptop to ${turn}`;
+  turnScreenBtn.textContent = `I'm ${turn}`;
+  turnScreen.classList.remove('hide');
+};
+
+const removeAllBoard = () => {
+  const playerBoardContainer = document.querySelector(
+    '.player-board-container'
+  );
+  const enemyBoardContainer = document.querySelector('.enemy-board-container');
+
+  playerBoardContainer.replaceChildren();
+  enemyBoardContainer.replaceChildren();
+};
+
+const showEnemyBoardAttacked = board => {
+  board.getBoard().forEach((square, i) => {
+    const x = i % 10;
+    const y = Math.floor(i / 10);
+    const squareElement = document.querySelector(
+      `.enemy-board [data-x='${x}'][data-y='${y}']`
+    );
+    const isReceivedAtk = square.isReceivedAtk();
+    const hasShip = square.getShip();
+
+    if (isReceivedAtk) squareElement.classList.add('received-atk');
+
+    if (isReceivedAtk && hasShip) squareElement.classList.add('ship-square');
+  });
+};
+
+const showPlayerBoardAttacked = board => {
+  board.getBoard().forEach((square, i) => {
+    if (!square.isReceivedAtk()) return;
+    const x = i % 10;
+    const y = Math.floor(i / 10);
+    const squareElement = document.querySelector(
+      `.player-board [data-x='${x}'][data-y='${y}']`
+    );
+
+    squareElement.classList.add('received-atk');
+  });
+};
+
+const addEventListenerToTurnEndBtn = (initTurn, changeTurn, turn) => {
+  const endTurnBtn = document.querySelector('.start-btn');
+
+  const endTurnBtnOnClick = () => {
+    changeTurn();
+    initTurn();
+    endTurnBtn.removeEventListener('click', endTurnBtnOnClick);
+    showTurnScreen(turn);
+  };
+
+  endTurnBtn.addEventListener('click', endTurnBtnOnClick);
 };
 
 export {
@@ -383,4 +520,12 @@ export {
   renderComputerAttack,
   showWinner,
   addEventListenerToStartBtn,
+  addEventListenerToEnemyTypeSelect,
+  addEventListenerToTurnScreenBtn,
+  showTurnScreen,
+  removeAllBoard,
+  showPlaceableShip,
+  showEnemyBoardAttacked,
+  showPlayerBoardAttacked,
+  addEventListenerToTurnEndBtn,
 };
