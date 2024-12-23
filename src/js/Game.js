@@ -78,7 +78,7 @@ const Game = () => {
     }
     if (turn === 'player2' && player2.getType() === 'computer') {
       player1EventListenerController.remove();
-      computer.attack(player2Attack, isReceivedAtk);
+      computer.attack(player2Attack, isReceivedAtk, player1Board.hasShip);
       return;
     }
     if (turn === 'player1' && player2.getType() === 'player') {
