@@ -55,7 +55,7 @@ main {
     }
     .square {
       border: 1px solid #7e7e7e;
-      background-color: #5e83ff;
+      background-color: #76aafe;
       margin-right: -1px;
       margin-bottom: -1px;
     }
@@ -73,7 +73,7 @@ main {
     }
     .enemy-board {
       .square-hover:hover {
-        background-color: #8aa5ff;
+        background-color: #93bcfd;
       }
     }
     :nth-child(10n) {
